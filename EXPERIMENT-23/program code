@@ -1,0 +1,74 @@
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+from scipy import stats
+
+data = {
+    'Control_Group': [120, 125, 130, 128, 135, 122, 127, 132,
+                      129, 126, 134, 131, 123, 128, 130],
+
+    'Treatment_Group': [110, 115, 112, 108, 118, 114, 109, 113,
+                        111, 116, 107, 110, 114, 112, 109]
+}
+
+df = pd.DataFrame(data)
+
+print("Clinical Trial Data:")
+print(df)
+
+control_mean = df['Control_Group'].mean()
+treatment_mean = df['Treatment_Group'].mean()
+
+print("\nMean Values:")
+print("Control Group:", round(control_mean, 2))
+print("Treatment Group:", round(treatment_mean, 2))
+
+
+
+t_stat, p_value = stats.ttest_ind(
+    df['Control_Group'],
+    df['Treatment_Group'],
+    equal_var=False
+)
+
+print("\nHypothesis Testing Results:")
+print("T-Statistic:", round(t_stat, 4))
+print("P-Value:", round(p_value, 6))
+
+alpha = 0.05
+
+if p_value < alpha:
+    print("\nResult: Reject Null Hypothesis")
+    print("There is a significant difference.")
+else:
+    print("\nResult: Accept Null Hypothesis")
+    print("There is no significant difference.")
+
+plt.figure(figsize=(8, 5))
+
+plt.boxplot(
+    [df['Control_Group'], df['Treatment_Group']],
+    labels=['Control Group', 'Treatment Group']
+)
+
+plt.title('Comparison of Control and Treatment Groups')
+plt.ylabel('Measurement')
+plt.grid(axis='y')
+plt.show()
+
+plt.figure(figsize=(7, 5))
+
+groups = ['Control Group', 'Treatment Group']
+means = [control_mean, treatment_mean]
+
+plt.bar(groups, means, color=['blue', 'green'])
+
+plt.title('Mean Comparison of Two Groups')
+plt.ylabel('Mean Measurement')
+plt.grid(axis='y')
+
+plt.text(0.5, max(means) - 2,
+         'P-Value = ' + str(round(p_value, 6)),
+         ha='center')
+
+plt.show()
