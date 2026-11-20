@@ -1,0 +1,31 @@
+
+import pandas as pd
+import matplotlib.pyplot as plt
+
+# Create customer sales data
+data = {
+    'Customer_ID': [101, 102, 103, 104, 105, 106, 107, 108, 109, 110],
+    'Age': [25, 30, 25, 35, 40, 30, 25, 45, 35, 30],
+    'Purchase': ['Yes', 'Yes', 'Yes', 'Yes', 'Yes',
+                 'Yes', 'Yes', 'Yes', 'Yes', 'Yes']
+}
+
+df = pd.DataFrame(data)
+
+print("Customer Sales Data:")
+print(df)
+
+purchased_customers = df[df['Purchase'] == 'Yes']
+
+frequency = purchased_customers['Age'].value_counts().sort_index()
+
+print("\nFrequency Distribution of Customer Ages:")
+print(frequency)
+
+frequency.plot(kind='bar', color='blue')
+
+plt.title('Frequency Distribution of Customer Ages')
+plt.xlabel('Customer Age')
+plt.ylabel('Frequency')
+plt.grid(axis='y')
+plt.show()
