@@ -1,0 +1,77 @@
+import pandas as pd
+import matplotlib.pyplot as plt
+from sklearn.cluster import KMeans
+from sklearn.preprocessing import StandardScaler
+
+data = {
+    'Customer_ID': [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
+    'Annual_Income': [20, 25, 30, 35, 40, 60, 65, 70, 80, 90],
+    'Spending_Score': [20, 25, 30, 35, 40, 60, 65, 70, 80, 90],
+    'Purchase_Frequency': [2, 3, 3, 4, 4, 6, 7, 7, 8, 9],
+    'Browsing_Time': [10, 15, 20, 25, 30, 40, 45, 50, 55, 60]
+}
+
+df = pd.DataFrame(data)
+
+print("Customer Dataset:")
+print(df)
+
+
+X = df[['Annual_Income', 'Spending_Score',
+        'Purchase_Frequency', 'Browsing_Time']]
+
+scaler = StandardScaler()
+X_scaled = scaler.fit_transform(X)
+
+kmeans = KMeans(n_clusters=3, random_state=42, n_init=10)
+df['Customer_Segment'] = kmeans.fit_predict(X_scaled)
+
+print("\nCustomer Segmentation Results:")
+print(df[['Customer_ID', 'Customer_Segment']])
+
+print("\nCustomers in Each Segment:")
+print(df['Customer_Segment'].value_counts())
+
+print("\nEnter New Customer Details:")
+
+income = float(input("Enter Annual Income: "))
+score = float(input("Enter Spending Score: "))
+frequency = int(input("Enter Purchase Frequency: "))
+browsing = float(input("Enter Browsing Time: "))
+
+
+new_customer = pd.DataFrame(
+    [[income, score, frequency, browsing]],
+    columns=X.columns
+)
+
+new_scaled = scaler.transform(new_customer)
+
+segment = kmeans.predict(new_scaled)
+
+print("\nNew Customer belongs to Segment:", segment[0])
+
+plt.figure(figsize=(8, 5))
+
+plt.scatter(
+    df['Annual_Income'],
+    df['Spending_Score'],
+    c=df['Customer_Segment'],
+    cmap='viridis',
+    s=100
+)
+
+plt.scatter(
+    income, score,
+    color='red',
+    marker='*',
+    s=250,
+    label='New Customer'
+)
+
+plt.xlabel('Annual Income')
+plt.ylabel('Spending Score')
+plt.title('E-Commerce Customer Segmentation')
+plt.legend()
+plt.grid()
+plt.show()
