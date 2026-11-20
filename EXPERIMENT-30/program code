@@ -1,0 +1,70 @@
+import pandas as pd
+from google.colab import files
+from sklearn.tree import DecisionTreeRegressor, export_text
+
+uploaded = files.upload()
+
+filename = list(uploaded.keys())[0]
+df = pd.read_csv(filename)
+
+print("Car Dataset Loaded Successfully!")
+print("Available Columns:", list(df.columns))
+
+features = ['Mileage', 'Age', 'Brand', 'Engine_Type']
+target = 'Price'
+
+df = pd.get_dummies(df, columns=['Brand', 'Engine_Type'])
+
+X = df.drop(columns=[target])
+y = df[target]
+
+model = DecisionTreeRegressor(max_depth=4, random_state=42)
+model.fit(X, y)
+
+print("\nCART Model Trained Successfully!")
+
+print("\nEnter New Car Details:")
+
+mileage = float(input("Enter Mileage (km): "))
+age = int(input("Enter Car Age (years): "))
+brand = input("Enter Brand: ").strip()
+engine = input("Enter Engine Type: ").strip()
+
+new_car = pd.DataFrame({
+    'Mileage': [mileage],
+    'Age': [age],
+    'Brand': [brand],
+    'Engine_Type': [engine]
+})
+
+
+new_car = pd.get_dummies(new_car, columns=['Brand', 'Engine_Type'])
+
+new_car = new_car.reindex(columns=X.columns, fill_value=0)
+
+predicted_price = model.predict(new_car)
+
+print("\nPredicted Car Price: Rs.", round(predicted_price[0], 2))
+
+print("\nDecision Path:")
+tree_rules = export_text(model, feature_names=list(X.columns))
+print(tree_rules)
+
+print("\nConditions Followed by New Car:")
+decision = model.decision_path(new_car)
+node_ids = decision.indices[
+    decision.indptr[0]:decision.indptr[1]
+]
+
+for node in node_ids:
+    if model.tree_.feature[node] != -2:
+        feature_name = X.columns[model.tree_.feature[node]]
+        threshold = model.tree_.threshold[node]
+        value = new_car.iloc[0, model.tree_.feature[node]]
+
+        if value <= threshold:
+            print(f"{feature_name} <= {threshold:.2f}")
+        else:
+            print(f"{feature_name} > {threshold:.2f}")
+
+print("Final Prediction: Rs.", round(predicted_price[0], 2))
