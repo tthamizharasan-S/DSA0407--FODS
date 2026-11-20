@@ -1,0 +1,28 @@
+
+import pandas as pd
+import matplotlib.pyplot as plt
+
+data = {
+    'Post_ID': [101, 102, 103, 104, 105, 106, 107, 108, 109, 110],
+    'Likes': [100, 200, 100, 300, 200, 400, 100, 300, 500, 200]
+}
+
+df = pd.DataFrame(data)
+
+print("Social Media Post Data:")
+print(df)
+
+frequency = df['Likes'].value_counts().sort_index()
+
+print("\nFrequency Distribution of Likes:")
+print(frequency)
+
+
+plt.bar(frequency.index.astype(str), frequency.values,
+        color='green')
+
+plt.title('Frequency Distribution of Likes')
+plt.xlabel('Number of Likes')
+plt.ylabel('Frequency')
+plt.grid(axis='y')
+plt.show()
