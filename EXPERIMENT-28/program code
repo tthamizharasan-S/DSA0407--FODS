@@ -1,0 +1,40 @@
+import pandas as pd
+from sklearn.cluster import KMeans
+from sklearn.preprocessing import StandardScaler
+
+data = {
+    'Annual_Income': [20, 25, 30, 35, 40, 60, 65, 70, 80, 90],
+    'Spending_Score': [20, 25, 30, 35, 40, 60, 65, 70, 80, 90],
+    'Purchase_Frequency': [2, 3, 3, 4, 4, 6, 7, 7, 8, 9]
+}
+
+df = pd.DataFrame(data)
+
+
+X = df[['Annual_Income', 'Spending_Score', 'Purchase_Frequency']]
+
+scaler = StandardScaler()
+X_scaled = scaler.fit_transform(X)
+
+kmeans = KMeans(n_clusters=3, random_state=42, n_init=10)
+kmeans.fit(X_scaled)
+
+print("K-Means Customer Segmentation Model Trained Successfully!")
+
+print("\nEnter New Customer Details:")
+
+income = float(input("Enter Annual Income (in thousands): "))
+score = float(input("Enter Spending Score (0-100): "))
+frequency = int(input("Enter Purchase Frequency: "))
+
+new_customer = pd.DataFrame(
+    [[income, score, frequency]],
+    columns=['Annual_Income', 'Spending_Score', 'Purchase_Frequency']
+)
+
+new_customer_scaled = scaler.transform(new_customer)
+
+segment = kmeans.predict(new_customer_scaled)
+
+print("\nCustomer Segmentation Result:")
+print("Customer belongs to Segment:", segment[0] + 1)
