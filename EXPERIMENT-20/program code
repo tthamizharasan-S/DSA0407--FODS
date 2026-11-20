@@ -1,0 +1,43 @@
+
+import numpy as np
+import pandas as pd
+from statsmodels.stats.proportion import proportions_ztest
+
+data = {
+    'Design': ['A', 'B'],
+    'Visitors': [1000, 1000],
+    'Conversions': [120, 160]
+}
+
+df = pd.DataFrame(data)
+
+df['Conversion Rate'] = (
+    df['Conversions'] / df['Visitors']
+) * 100
+
+print("A/B Testing Data:")
+print(df)
+
+count = np.array([120, 160])
+nobs = np.array([1000, 1000])
+
+z_stat, p_value = proportions_ztest(count, nobs)
+
+print("\nA/B Testing Results")
+
+print("Design A Conversion Rate:",
+      round(df['Conversion Rate'][0], 2), "%")
+
+print("Design B Conversion Rate:",
+      round(df['Conversion Rate'][1], 2), "%")
+
+print("Z-Statistic:", round(z_stat, 4))
+print("P-Value:", round(p_value, 4))
+
+alpha = 0.05
+
+if p_value < alpha:
+    print("\nResult: Significant difference exists.")
+    print("Website Design B performs better.")
+else:
+    print("\nResult: No significant difference exists.")
