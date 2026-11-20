@@ -1,0 +1,70 @@
+
+import pandas as pd
+import matplotlib.pyplot as plt
+
+data = {
+    'Player_Name': [
+        'Lionel Messi', 'Cristiano Ronaldo', 'Kylian Mbappe',
+        'Erling Haaland', 'Kevin De Bruyne', 'Mohamed Salah',
+        'Harry Kane', 'Vinicius Junior', 'Jude Bellingham',
+        'Robert Lewandowski', 'Luka Modric', 'Virgil van Dijk'
+    ],
+    'Age': [37, 39, 26, 25, 33, 32, 31, 24, 21, 36, 39, 33],
+    'Position': [
+        'Forward', 'Forward', 'Forward', 'Forward',
+        'Midfielder', 'Forward', 'Forward', 'Forward',
+        'Midfielder', 'Forward', 'Midfielder', 'Defender'
+    ],
+    'Goals_Scored': [20, 18, 30, 27, 8, 22, 24, 19, 15, 21, 4, 2],
+    'Weekly_Salary': [
+        1200000, 1000000, 800000, 700000, 450000, 400000,
+        350000, 300000, 250000, 275000, 200000, 180000
+    ]
+}
+
+df = pd.DataFrame(data)
+df.to_csv('soccer_players.csv', index=False)
+
+
+df = pd.read_csv('soccer_players.csv')
+
+print("SOCCER PLAYER DATASET")
+print(df)
+
+print("\nTOP 5 PLAYERS BY GOALS")
+print(df.nlargest(5, 'Goals_Scored')[
+    ['Player_Name', 'Goals_Scored']
+])
+
+print("\nTOP 5 PLAYERS BY WEEKLY SALARY")
+print(df.nlargest(5, 'Weekly_Salary')[
+    ['Player_Name', 'Weekly_Salary']
+])
+
+
+average_age = df['Age'].mean()
+print("\nAverage Age:", round(average_age, 2))
+
+print("\nPLAYERS ABOVE AVERAGE AGE")
+print(df[df['Age'] > average_age][
+    ['Player_Name', 'Age']
+])
+
+
+position_count = df['Position'].value_counts()
+
+print("\nPLAYERS BY POSITION")
+print(position_count)
+
+position_count.plot(kind='bar', figsize=(8, 5))
+
+plt.title('Distribution of Soccer Players by Position')
+plt.xlabel('Player Position')
+plt.ylabel('Number of Players')
+plt.xticks(rotation=0)
+plt.grid(axis='y')
+plt.tight_layout()
+plt.show()
+
+from google.colab import files
+files.download('soccer_players.csv')
