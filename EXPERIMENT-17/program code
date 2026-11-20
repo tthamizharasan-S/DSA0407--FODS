@@ -1,0 +1,41 @@
+
+import pandas as pd
+import re
+from collections import Counter
+import matplotlib.pyplot as plt
+
+# Create customer reviews dataset
+data = {
+    'Review': [
+        'This product is very good',
+        'This product is excellent',
+        'Good quality product',
+        'Very good product',
+        'Excellent quality and good service'
+    ]
+}
+
+df = pd.DataFrame(data)
+
+print("Customer Reviews Dataset:")
+print(df)
+
+text = ' '.join(df['Review']).lower()
+
+words = re.findall(r'\b[a-z]+\b', text)
+
+frequency = Counter(words)
+
+print("\nFrequency Distribution of Words:")
+for word, count in frequency.items():
+    print(word, ":", count)
+
+plt.figure(figsize=(10, 5))
+plt.bar(frequency.keys(), frequency.values(), color='blue')
+
+plt.title('Word Frequency Distribution in Customer Reviews')
+plt.xlabel('Words')
+plt.ylabel('Frequency')
+plt.xticks(rotation=45)
+plt.grid(axis='y')
+plt.show()
