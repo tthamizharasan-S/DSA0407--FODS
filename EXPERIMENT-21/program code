@@ -1,0 +1,63 @@
+import numpy as np
+import pandas as pd
+from scipy import stats
+from google.colab import files
+import math
+
+uploaded = files.upload()
+
+df = pd.read_csv('rare_elements.csv')
+
+data = pd.to_numeric(df.iloc[:, 0], errors='coerce').dropna().values
+
+n = int(input("Enter sample size: "))
+confidence = float(input("Enter confidence level (e.g. 95): "))
+precision = float(input("Enter desired precision: "))
+
+if n < 2 or n > len(data):
+    raise ValueError("Sample size must be between 2 and dataset size.")
+
+if confidence <= 0 or confidence >= 100:
+    raise ValueError("Confidence level must be between 0 and 100.")
+
+if precision <= 0:
+    raise ValueError("Precision must be greater than zero.")
+
+np.random.seed(42)
+sample = np.random.choice(data, size=n, replace=False)
+
+sample_mean = np.mean(sample)
+sample_std = np.std(sample, ddof=1)
+
+alpha = 1 - confidence / 100
+t_value = stats.t.ppf(1 - alpha/2, df=n-1)
+
+margin_error = t_value * (sample_std / np.sqrt(n))
+
+lower_limit = sample_mean - margin_error
+upper_limit = sample_mean + margin_error
+
+z_value = stats.norm.ppf(1 - alpha/2)
+required_n = math.ceil((z_value * sample_std / precision) ** 2)
+
+print("\nRARE ELEMENT CONCENTRATION ANALYSIS")
+
+print("Sample Size:", n)
+print("Sample Mean:", round(sample_mean, 4))
+print("Sample Standard Deviation:", round(sample_std, 4))
+
+print("\nPoint Estimate:", round(sample_mean, 4))
+
+print("\nConfidence Level:", confidence, "%")
+print("Confidence Interval:",
+      round(lower_limit, 4), "to", round(upper_limit, 4))
+
+print("Margin of Error:", round(margin_error, 4))
+print("Desired Precision:", precision)
+
+print("\nApproximate Required Sample Size:", required_n)
+
+if margin_error <= precision:
+    print("Desired precision achieved.")
+else:
+    print("Desired precision not achieved.")
