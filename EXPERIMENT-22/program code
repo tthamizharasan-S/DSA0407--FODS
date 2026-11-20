@@ -1,0 +1,49 @@
+import pandas as pd
+import numpy as np
+from scipy import stats
+from google.colab import files
+
+uploaded = files.upload()
+
+# Read customer reviews dataset
+df = pd.read_csv('customer_reviews.csv')
+
+print("Customer Reviews Dataset:")
+print(df.head())
+
+ratings = pd.to_numeric(df['rating'], errors='coerce').dropna()
+
+n = len(ratings)
+mean_rating = ratings.mean()
+std_dev = ratings.std()
+
+confidence_level = 0.95
+alpha = 1 - confidence_level
+
+t_value = stats.t.ppf(1 - alpha/2, df=n-1)
+
+margin_error = t_value * (std_dev / np.sqrt(n))
+
+lower_limit = mean_rating - margin_error
+upper_limit = mean_rating + margin_error
+
+
+print("\nCUSTOMER RATING ANALYSIS")
+
+print("Number of Ratings:", n)
+print("Average Rating:", round(mean_rating, 2))
+print("Standard Deviation:", round(std_dev, 2))
+
+print("\n95% Confidence Interval:")
+print("Lower Limit:", round(lower_limit, 2))
+print("Upper Limit:", round(upper_limit, 2))
+
+print("Margin of Error:", round(margin_error, 2))
+
+
+if mean_rating >= 4:
+    print("\nCustomer Satisfaction: High")
+elif mean_rating >= 3:
+    print("\nCustomer Satisfaction: Moderate")
+else:
+    print("\nCustomer Satisfaction: Low")
