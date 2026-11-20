@@ -1,0 +1,35 @@
+import re
+from collections import Counter
+import matplotlib.pyplot as plt
+
+text = """Python is a programming language.
+Python is easy to learn.
+Programming is interesting.
+Python is widely used in data science."""
+
+with open("sample_text.txt", "w") as file:
+    file.write(text)
+
+with open("sample_text.txt", "r") as file:
+    data = file.read()
+
+data = data.lower()
+
+words = re.findall(r'\b[a-z]+\b', data)
+
+word_frequency = Counter(words)
+
+print("Word Frequency Distribution:")
+for word, count in word_frequency.items():
+    print(word, ":", count)
+
+plt.figure(figsize=(10, 5))
+plt.bar(word_frequency.keys(), word_frequency.values(),
+        color='green')
+
+plt.title("Word Frequency Distribution")
+plt.xlabel("Words")
+plt.ylabel("Frequency")
+plt.xticks(rotation=45)
+plt.grid(axis='y')
+plt.show()
