@@ -1,0 +1,63 @@
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+from google.colab import files
+
+uploaded = files.upload()
+
+filename = list(uploaded.keys())[0]
+df = pd.read_csv(filename)
+
+print("Stock Dataset Loaded Successfully!")
+print("\nDataset:")
+print(df.head())
+
+
+prices = df['Close']
+
+mean_price = prices.mean()
+variance = prices.var()
+std_dev = prices.std()
+minimum = prices.min()
+maximum = prices.max()
+
+
+df['Daily_Change'] = prices.diff()
+
+
+df['Daily_Return'] = prices.pct_change() * 100
+
+print("\nStock Price Analysis")
+print("----------------------------")
+print("Mean Closing Price      :", round(mean_price, 2))
+print("Variance                :", round(variance, 2))
+print("Standard Deviation      :", round(std_dev, 2))
+print("Minimum Closing Price   :", round(minimum, 2))
+print("Maximum Closing Price   :", round(maximum, 2))
+print("Average Daily Return (%) :",
+      round(df['Daily_Return'].mean(), 2))
+
+if std_dev < mean_price * 0.02:
+    print("\nStock Price Movement: Low Variability")
+elif std_dev < mean_price * 0.05:
+    print("\nStock Price Movement: Moderate Variability")
+else:
+    print("\nStock Price Movement: High Variability")
+
+
+plt.figure(figsize=(10, 5))
+plt.plot(df['Close'], marker='o', label='Closing Price')
+plt.xlabel("Trading Days")
+plt.ylabel("Closing Price")
+plt.title("Stock Price Movement Analysis")
+plt.legend()
+plt.grid()
+plt.show()
+
+plt.figure(figsize=(10, 5))
+plt.plot(df['Daily_Return'], marker='o')
+plt.xlabel("Trading Days")
+plt.ylabel("Daily Return (%)")
+plt.title("Daily Stock Returns")
+plt.grid()
+plt.show()
