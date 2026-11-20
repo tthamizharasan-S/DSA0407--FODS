@@ -1,0 +1,39 @@
+import pandas as pd
+from sklearn.linear_model import LogisticRegression
+
+data = {
+    'Usage_Minutes': [100, 200, 300, 400, 500, 150, 250, 450, 350, 550],
+    'Contract_Duration': [2, 12, 24, 36, 6, 3, 18, 2, 30, 1],
+    'Monthly_Bill': [500, 700, 800, 900, 600, 550, 750, 950, 850, 1000],
+    'Churn': [1, 0, 0, 0, 1, 1, 0, 1, 0, 1]
+}
+
+df = pd.DataFrame(data)
+
+X = df[['Usage_Minutes', 'Contract_Duration', 'Monthly_Bill']]
+y = df['Churn']
+
+model = LogisticRegression()
+model.fit(X, y)
+
+print("Customer Churn Prediction Model Trained Successfully!")
+
+print("\nEnter New Customer Details:")
+
+usage = float(input("Enter Usage Minutes: "))
+contract = int(input("Enter Contract Duration (months): "))
+bill = float(input("Enter Monthly Bill: "))
+
+new_customer = pd.DataFrame(
+    [[usage, contract, bill]],
+    columns=['Usage_Minutes', 'Contract_Duration', 'Monthly_Bill']
+)
+
+prediction = model.predict(new_customer)
+
+print("\nCustomer Churn Prediction:")
+
+if prediction[0] == 1:
+    print("The customer is likely to CHURN.")
+else:
+    print("The customer is NOT likely to CHURN.")
