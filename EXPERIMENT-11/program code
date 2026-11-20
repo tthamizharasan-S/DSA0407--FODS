@@ -1,0 +1,26 @@
+import matplotlib.pyplot as plt
+
+months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
+          'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
+
+sales = [120, 150, 180, 160, 200, 220,
+         250, 230, 280, 300, 320, 350]
+
+plt.plot(months, sales, marker='o', color='blue',
+         linestyle='-', label='Monthly Sales')
+
+plt.title('Monthly Product Sales')
+plt.xlabel('Months')
+plt.ylabel('Sales')
+plt.legend()
+plt.grid(True)
+plt.show()
+
+import numpy as np
+
+x = np.arange(len(sales))
+m, c = np.polyfit(x, sales, 1)
+
+next_month_sales = m * 12 + c
+
+print("Predicted Next Month Sales:", round(next_month_sales, 2))
