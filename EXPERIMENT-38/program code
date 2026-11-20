@@ -1,0 +1,74 @@
+import pandas as pd
+import matplotlib.pyplot as plt
+import seaborn as sns
+from google.colab import files
+from sklearn.linear_model import LinearRegression
+
+uploaded = files.upload()
+
+filename = list(uploaded.keys())[0]
+df = pd.read_csv(filename)
+
+print("Student Dataset Loaded Successfully!")
+print("\nDataset:")
+print(df.head())
+
+X = df[['Study_Hours']]
+y = df['Exam_Score']
+
+
+correlation = df['Study_Hours'].corr(df['Exam_Score'])
+
+print("\nCorrelation Analysis:")
+print("Correlation Coefficient:", round(correlation, 4))
+
+if correlation > 0:
+    print("Positive Correlation: More study time may lead to higher scores.")
+elif correlation < 0:
+    print("Negative Correlation: More study time is associated with lower scores.")
+else:
+    print("No Linear Correlation.")
+
+plt.figure(figsize=(7, 5))
+plt.scatter(df['Study_Hours'], df['Exam_Score'])
+plt.xlabel("Study Hours")
+plt.ylabel("Exam Score")
+plt.title("Scatter Plot: Study Time vs Exam Score")
+plt.grid()
+plt.show()
+
+plt.figure(figsize=(7, 5))
+plt.plot(df['Study_Hours'], df['Exam_Score'], marker='o')
+plt.xlabel("Study Hours")
+plt.ylabel("Exam Score")
+plt.title("Line Plot: Study Time vs Exam Score")
+plt.grid()
+plt.show()
+
+
+model = LinearRegression()
+model.fit(X, y)
+
+plt.figure(figsize=(7, 5))
+sns.regplot(
+    x='Study_Hours',
+    y='Exam_Score',
+    data=df
+)
+plt.xlabel("Study Hours")
+plt.ylabel("Exam Score")
+plt.title("Regression Plot: Study Time vs Exam Score")
+plt.grid()
+plt.show()
+
+print("\nRegression Analysis:")
+print("Slope:", round(model.coef_[0], 2))
+print("Intercept:", round(model.intercept_, 2))
+print("R2 Score:", round(model.score(X, y), 4))
+
+hours = float(input("\nEnter Study Hours: "))
+
+new_data = pd.DataFrame({'Study_Hours': [hours]})
+predicted_score = model.predict(new_data)
+
+print("Predicted Exam Score:", round(predicted_score[0], 2))
