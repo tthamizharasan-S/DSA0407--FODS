@@ -1,0 +1,21 @@
+import numpy as np
+from scipy import stats
+
+A = np.array([2.1,2.4,1.9,2.6,2.2,
+              2.3,2.0,2.5,2.2,2.4])
+
+B = np.array([2.8,3.1,2.7,3.0,2.9,
+              3.3,2.6,3.2,2.9,3.0])
+
+print("Mean of Design A:", round(np.mean(A), 2))
+print("Mean of Design B:", round(np.mean(B), 2))
+
+t, p = stats.ttest_ind(A, B, equal_var=False)
+
+print("T-statistic:", round(t, 3))
+print("P-value:", format(p, ".8f"))
+
+if p < 0.05:
+    print("Significant difference exists")
+else:
+    print("No significant difference")
